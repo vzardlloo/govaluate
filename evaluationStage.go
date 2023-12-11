@@ -419,7 +419,9 @@ func separatorStage(left interface{}, right interface{}, parameters Parameters) 
 }
 
 func inStage(left interface{}, right interface{}, parameters Parameters) (interface{}, error) {
-	//log.Printf("in right: %v", right)
+	if right == nil {
+		return false, nil
+	}
 	switch right.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, string:
 		right = []interface{}{right}
@@ -501,11 +503,17 @@ func comparatorTypeCheck(left interface{}, right interface{}) bool {
 }
 
 func isArray(value interface{}) bool {
-	//log.Printf("isArray value: %v,kind: %v", value, reflect.TypeOf(value).Kind().String())
+	//compatible value is nil
+	if value == nil {
+		return false
+	}
+
+	//compatible vale single item case,eg: ("A")
 	switch value.(type) {
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, string:
 		value = []interface{}{value}
 	}
+
 	switch value.(type) {
 	case []interface{}:
 		return true
